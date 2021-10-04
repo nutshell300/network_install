@@ -1,0 +1,22 @@
+[nix]
+w2papl0000010.heb.com
+
+[nix:vars]
+ansible_become=yes
+package_names=wireshark
+
+
+[win]
+w2capw0025704
+
+
+[win:vars]
+ansible_user=pgrro
+ansible_password=###
+ansible_port=5985
+ansible_connection=winrm
+ansible_winrm_transport=kerberos
+ansible_winrm_server_cert_validation=ignore
+ansible_winrm_kerberos_delegation=true
+package=Wireshark 3.4.8 32-bit
+package_dest=C:\temp\

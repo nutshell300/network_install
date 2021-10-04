@@ -1,0 +1,6 @@
+---
+- name: "Install wireshark on windows or linux if needed and run capture on network device"
+  hosts: all
+  tasks:
+    - name: Begin distribution specific tasks
+      include_tasks: "{{ ansible_facts['os_family'] }}.yml"

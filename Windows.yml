@@ -1,0 +1,25 @@
+---
+- name: Check if "{{ package }}" is installed.
+  win_shell: Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | where-object{$_.DisplayName -ccontains "{{ package }}"} | Select DisplayName | Convertto-Json -Depth 1
+  register: output
+   
+- name: print when package is not found.
+  debug: msg="{{ output }}}"
+  when: output.stdout == ""
+
+- name: Copy {{ package }} to target for installation
+  ansible.windows.win_copy:
+     src: files/Wireshark-win32-3.4.8.exe
+     dest: "{{ package_dest }}"
+  when: output.stdout == ""
+   
+- name: Install "{{ package }}"     
+  win_shell: "{{ package_dest + 'Wireshark-win32-3.4.8.exe /S' }}"
+  when: output.stdout == ""
+
+- name: 'Run the powershell command to get network data'
+  win_shell: ."C:\Program Files (x86)\Wireshark\tshark.exe" -i Ethernet0 -f 'port 80 or port 44' -c 10 | Convertto-Json
+  register: netdata
+  
+- name: show netdata
+  debug: msg="{{ netdata.stdout }}"
